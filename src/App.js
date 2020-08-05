@@ -6,9 +6,9 @@ import SearchBox from "./components/searchBox/SearchBox";
 const App = () => {
   return (
     <>
-      <GlobalStyles />
       <Header />
       <SearchBox />
+      <GlobalStyles />
     </>
   );
 };

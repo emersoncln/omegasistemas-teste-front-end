@@ -16,8 +16,12 @@ html, body, #root {
 
 body {
   font: 14px sans-serif;
-  background: snow;
+  background: lavender;
   color: #333;
   -webkit-font-smoothing: antialiased !important;
+}
+
+button :hover {
+  background: #7159c1;
 }
 `;

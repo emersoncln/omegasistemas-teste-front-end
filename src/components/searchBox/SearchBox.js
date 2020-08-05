@@ -1,51 +1,77 @@
 import React, { Component } from "react";
-import { Container, Input, Button} from "./styles";
-import { api, apiEstados, apiMunicipios } from "../../services/api";
+import { Container, Button, Box, Card, Footer } from "./styles";
+import { api, apiAux } from "../../services/api";
+import data from "../../data/dados.json";
 
 class SearchBox extends Component {
   state = {
-    codigoIBGE: "",
-    valor: 0,
-    UF: "33",
     municipios: [],
-    pessoas: 0,
+    show: false,
+    showList: false,
   };
 
   componentDidMount() {
     this.getMunicipios();
   }
 
-  getDados = async () => {
-    const response = await api.data;
-
-    this.setState({ valor: response });
-
-    console.log(this.state.valor);
-  };
-
+  // receiving cities from api data
   getMunicipios = async () => {
-    const { UF } = this.state;
-    const response = await apiMunicipios.get(`${UF}/municipios`);
+    const response = await api.get(`51/municipios`);
 
     this.setState({ municipios: response.data });
-
-    console.log(this.state.municipios);
   };
 
-  verificaCodigoIBGE =  () => {
-    
-  }
+  // function maping cities from array
+  LoadList = () => {
+    const { municipios, showList } = this.state;
+    if (showList === true) {
+      return municipios.map((resp) => (
+        <Box key={resp.id}>
+          <h1>Nome do municipio: {resp.nome}</h1>
+          <h2>Código do IBGE: {resp.id}</h2>
+        </Box>
+      ));
+    } else {
+      return null;
+    }
+  };
+
+  // gettig local data
+  Load = () => {
+    const { show } = this.state;
+    if (show === true) {
+      return data.map((resp) => (
+        <Box key={resp.id}>
+          <h1>Nome do municipio: {resp.municipio.nomeIBGE}</h1>
+          <h2>quantidade de beneficiários: {resp.quantidadeBeneficiados}</h2>
+          <h3>valor recebido no total: {resp.valor}</h3>
+          <p>Descrição beneficio: {resp.tipo.descricao}</p>
+        </Box>
+      ));
+    } else {
+      return null;
+    }
+  };
 
   render() {
     return (
       <Container>
-        <h1>municipio: </h1>
-        <Input placeholder={"digite seu municipio"} 
-        type="text"
-        value={}
-        onChange={}/>
-
-        <Button onClick={() =>{}}>verficar</Button>
+        <Card>
+          {this.Load()}
+          {this.LoadList()}
+        </Card>
+        <Footer>
+          <Button
+            onClick={() => this.setState({ show: true, showList: false })}
+          >
+            Disponíveis para consulta
+          </Button>
+          <Button
+            onClick={() => this.setState({ showList: true, show: false })}
+          >
+            Lista completa
+          </Button>
+        </Footer>
       </Container>
     );
   }
