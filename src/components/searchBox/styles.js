@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+`;
 
 export const Input = styled.input`
   margin: 10px;
@@ -12,22 +13,27 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.button`
-  align-self: center;
-  border-radius: 50px;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px;
+  border: none;
   height: 30px;
-  width: 300px;
+  width: 250px;
   background: white;
 `;
 
 export const Box = styled.div`
+  text-align: center;
+  box-shadow: gray;
+  border-radius: 5px;
   margin: 10px;
   padding: 20px;
   background: #7159c1;
   color: white;
 `;
 
-export const Card = styled.div`
-`;
+export const Card = styled.div``;
 
 export const Footer = styled.div`
   display: flex;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Button, Box, Card, Footer } from "./styles";
-import { api, apiAux } from "../../services/api";
+import { MdSearch, MdList } from "react-icons/md";
+import { api } from "../../services/api";
 import data from "../../data/dados.json";
 
 class SearchBox extends Component {
@@ -65,11 +66,13 @@ class SearchBox extends Component {
             onClick={() => this.setState({ show: true, showList: false })}
           >
             Disponíveis para consulta
+            <MdSearch size={20} color={"black"} />
           </Button>
           <Button
             onClick={() => this.setState({ showList: true, show: false })}
           >
             Lista completa
+            <MdList size={20} color={"black"} />
           </Button>
         </Footer>
       </Container>
