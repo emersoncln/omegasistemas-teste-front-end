@@ -1,80 +1,120 @@
 import React, { Component } from "react";
-import { Container, Button, Box, Card, Footer } from "./styles";
-import { MdSearch, MdList } from "react-icons/md";
-import { api } from "../../services/api";
-import data from "../../data/dados.json";
+import { Container, Button, Box, Paper } from "./styles";
+import { api, apiAux } from "../../services/api";
+import {Select, FormControl, InputLabel, Input, Chip, MenuItem} from "@material-ui/core";
+import {Search} from "@material-ui/icons" 
 
 class SearchBox extends Component {
   state = {
-    municipios: [],
-    show: false,
-    showList: false,
+    cities: [],
+    selectedCities: [],
+    list: [],
+    loading: false,
   };
 
   componentDidMount() {
-    this.getMunicipios();
+    this.getCities();
   }
 
   // receiving cities from api data
-  getMunicipios = async () => {
+  getCities = async () => {
     const response = await api.get(`51/municipios`);
-
-    this.setState({ municipios: response.data });
+    this.setState({ cities: response.data });
   };
+
+  getDataAuxilio = async () => {
+    const group = [];
+    let i = 0;
+    this.setState({loading: true})
+    while (i < this.state.selectedCities.length) {
+      const item = this.state.selectedCities[i]
+
+      const { data } = await apiAux().get("",
+      {
+        params: {
+          mesAno: 202004,
+          codigoIbge: item,
+          pagina: 1,
+        },
+      });
+
+      group.push(...data);
+      i++;
+    }
+    this.setState({list: group, loading: false})
+  }
+
+  handleChange = (event) => {
+    this.setState({ selectedCities: event.target.value });
+  }
 
   // function maping cities from array
-  LoadList = () => {
-    const { municipios, showList } = this.state;
-    if (showList === true) {
-      return municipios.map((resp) => (
-        <Box key={resp.id}>
-          <h1>Nome do municipio: {resp.nome}</h1>
-          <h2>Código do IBGE: {resp.id}</h2>
-        </Box>
-      ));
-    } else {
-      return null;
-    }
+  renderCities = () => {
+    const { cities } = this.state;
+    return cities.map((resp) => (
+      <MenuItem key={resp.id} value={resp.id}>{resp.nome}</MenuItem>
+    ))
   };
 
-  // gettig local data
+  // maping list received from selected cities 
   Load = () => {
-    const { show } = this.state;
-    if (show === true) {
-      return data.map((resp) => (
+    const { list } = this.state;
+      return list.map((resp) => (
         <Box key={resp.id}>
-          <h1>Nome do municipio: {resp.municipio.nomeIBGE}</h1>
+          <h2>Nome do municipio: {resp.municipio.nomeIBGE}</h2>
           <h2>quantidade de beneficiários: {resp.quantidadeBeneficiados}</h2>
           <h3>valor recebido no total: {resp.valor}</h3>
           <p>Descrição beneficio: {resp.tipo.descricao}</p>
         </Box>
       ));
-    } else {
-      return null;
-    }
   };
 
   render() {
     return (
       <Container>
-        <Card>
-          {this.Load()}
-          {this.LoadList()}
-        </Card>
-        <Footer>
-          <Button
-            onClick={() => this.setState({ show: true, showList: false })}
+        <h1>Filtros</h1>
+        <Paper elevation={4} >
+
+          <FormControl variant={"outlined"} style={{minWidth: 200}}>
+            <InputLabel id="chip-label">Cidades</InputLabel>
+            <Select
+              labelId="mutiple-chip-label"
+              id="mutiple-chip-cities"
+              multiple
+              value={this.state.selectedCities}
+              onChange={this.handleChange}
+              input={<Input id="multiple-chip" />}
+              renderValue={(selected) => (
+                <div>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </div>
+              )}
+            >
+              {this.renderCities()}
+            </Select>
+            <p>Selecione dois municipios</p>
+        </FormControl>
+
+        <Button
+            variant={"contained"}
+            color="primary"
+            onClick={() => {
+              this.getDataAuxilio();
+            }}
           >
-            Disponíveis para consulta
-            <MdSearch size={20} color={"black"} />
+              Filtrar <Search />
           </Button>
-          <Button
-            onClick={() => this.setState({ showList: true, show: false })}
-          >
-            Lista completa
-            <MdList size={20} color={"black"} />
-          </Button>
-        </Footer>
+      </Paper>
+
+      {this.state.loading && <Paper style={{marginTop: 10}}>Carregando...</Paper>}
+      <div className="container-itens">
+        {this.Load()}
+      </div>
+
+
+
       </Container>
     );
   }

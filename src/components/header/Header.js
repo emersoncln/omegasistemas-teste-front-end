@@ -1,10 +1,10 @@
 import React from "react";
-import { Container, Title } from "./styles";
+import { Container } from "./styles";
 
 const Header = () => {
   return (
     <Container>
-      <Title>Detalhamento de benefícios de Mato Grosso</Title>
+      <h1>Detalhamento de benefícios de Mato Grosso</h1>
     </Container>
   );
 };

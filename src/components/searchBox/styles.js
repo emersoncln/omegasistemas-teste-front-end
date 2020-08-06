@@ -1,6 +1,12 @@
 import styled from "styled-components";
+import {Paper as MuiPaper, Button as MuiButtom} from "@material-ui/core"
 
 export const Container = styled.div`
+
+.MuiButton-containedPrimary{
+  background-color: #7159c1;
+}
+
 `;
 
 export const Input = styled.input`
@@ -12,15 +18,9 @@ export const Input = styled.input`
   color: blue;
 `;
 
-export const Button = styled.button`
-  padding: 5px;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 5px;
-  border: none;
-  height: 30px;
-  width: 250px;
-  background: white;
+export const Button = styled(MuiButtom)`
+display: inline-block;
+  
 `;
 
 export const Box = styled.div`
@@ -43,4 +43,11 @@ export const Footer = styled.div`
 
 export const Title = styled.h1`
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+`;
+
+
+export const Paper = styled(MuiPaper)`
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
 `;
