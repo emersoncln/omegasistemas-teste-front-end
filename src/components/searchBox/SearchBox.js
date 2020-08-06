@@ -1,8 +1,15 @@
 import React, { Component } from "react";
 import { Container, Button, Box, Paper } from "./styles";
 import { api, apiAux } from "../../services/api";
-import {Select, FormControl, InputLabel, Input, Chip, MenuItem} from "@material-ui/core";
-import {Search} from "@material-ui/icons" 
+import {
+  Select,
+  FormControl,
+  InputLabel,
+  Input,
+  Chip,
+  MenuItem,
+} from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 
 class SearchBox extends Component {
   state = {
@@ -25,12 +32,11 @@ class SearchBox extends Component {
   getDataAuxilio = async () => {
     const group = [];
     let i = 0;
-    this.setState({loading: true})
+    this.setState({ loading: true });
     while (i < this.state.selectedCities.length) {
-      const item = this.state.selectedCities[i]
+      const item = this.state.selectedCities[i];
 
-      const { data } = await apiAux().get("",
-      {
+      const { data } = await apiAux().get("", {
         params: {
           mesAno: 202004,
           codigoIbge: item,
@@ -41,41 +47,42 @@ class SearchBox extends Component {
       group.push(...data);
       i++;
     }
-    this.setState({list: group, loading: false})
-  }
+    this.setState({ list: group, loading: false });
+  };
 
   handleChange = (event) => {
     this.setState({ selectedCities: event.target.value });
-  }
+  };
 
   // function maping cities from array
   renderCities = () => {
     const { cities } = this.state;
     return cities.map((resp) => (
-      <MenuItem key={resp.id} value={resp.id}>{resp.nome}</MenuItem>
-    ))
+      <MenuItem key={resp.id} value={resp.id}>
+        {resp.nome}
+      </MenuItem>
+    ));
   };
 
-  // maping list received from selected cities 
+  // maping list received from selected cities
   Load = () => {
     const { list } = this.state;
-      return list.map((resp) => (
-        <Box key={resp.id}>
-          <h2>Nome do municipio: {resp.municipio.nomeIBGE}</h2>
-          <h2>quantidade de beneficiários: {resp.quantidadeBeneficiados}</h2>
-          <h3>valor recebido no total: {resp.valor}</h3>
-          <p>Descrição beneficio: {resp.tipo.descricao}</p>
-        </Box>
-      ));
+    return list.map((resp) => (
+      <Box key={resp.id}>
+        <h2>Nome do municipio: {resp.municipio.nomeIBGE}</h2>
+        <h2>quantidade de beneficiários: {resp.quantidadeBeneficiados}</h2>
+        <h3>valor recebido no total: {resp.valor}</h3>
+        <p>Descrição beneficio: {resp.tipo.descricao}</p>
+      </Box>
+    ));
   };
 
   render() {
     return (
       <Container>
         <h1>Filtros</h1>
-        <Paper elevation={4} >
-
-          <FormControl variant={"outlined"} style={{minWidth: 200}}>
+        <Paper elevation={4}>
+          <FormControl variant={"outlined"} style={{ minWidth: 200 }}>
             <InputLabel id="chip-label">Cidades</InputLabel>
             <Select
               labelId="mutiple-chip-label"
@@ -95,26 +102,23 @@ class SearchBox extends Component {
               {this.renderCities()}
             </Select>
             <p>Selecione dois municipios</p>
-        </FormControl>
+          </FormControl>
 
-        <Button
+          <Button
             variant={"contained"}
             color="primary"
             onClick={() => {
               this.getDataAuxilio();
             }}
           >
-              Filtrar <Search />
+            Filtrar <Search />
           </Button>
-      </Paper>
+        </Paper>
 
-      {this.state.loading && <Paper style={{marginTop: 10}}>Carregando...</Paper>}
-      <div className="container-itens">
-        {this.Load()}
-      </div>
-
-
-
+        {this.state.loading && (
+          <Paper style={{ marginTop: 10 }}>Carregando...</Paper>
+        )}
+        <div className="container-itens">{this.Load()}</div>
       </Container>
     );
   }
